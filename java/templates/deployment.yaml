@@ -25,7 +25,7 @@ spec:
         release: {{ .Release.Name }}
     spec:
       containers:
-      - name: {{ template "app.name" . }}
+      - name: java
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
 {{- if .Values.app.extraArgs }}
         args:
