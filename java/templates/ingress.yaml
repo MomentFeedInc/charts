@@ -1,5 +1,5 @@
 {{- if .Values.ingress.enabled }}
-{{- $serviceName := include "fullname" . }}
+{{- $serviceName := include "app.fullname" . }}
 apiVersion: networking/v1beta1
 kind: Ingress
 metadata:
