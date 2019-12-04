@@ -24,6 +24,9 @@ spec:
     http:
       paths:
       - backend:
+          serviceName: ssl-redirect
+          servicePort: use-annotation
+      - backend:
           serviceName: {{ $serviceName }}
           servicePort: http
 {{- end }}
