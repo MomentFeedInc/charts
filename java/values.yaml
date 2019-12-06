@@ -43,7 +43,7 @@ hpa:
   enabled: false
   minReplicas: 3
   maxReplicas: 10
-  targetCPUUtilization: 50
+  targetCPUUtilization: 80
 
 # Ref: https://kubernetes.io/docs/concepts/services-networking/ingress/
 
