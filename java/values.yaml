@@ -41,7 +41,7 @@ app:
 
 hpa:
   enabled: false
-  minReplicas: 3
+  minReplicas: 2
   maxReplicas: 10
   targetCPUUtilization: 80
 
