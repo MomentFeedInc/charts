@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "app.fullname" . }}
+  labels:
+    app: {{ template "app.name" . }}
+    chart: {{ template "app.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "app.fullname" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      annotations:
+        checksum/secrets: {{ .Values.app.secretsChecksum }}
+{{- if .Values.datadog.enabled }}
+        ad.datadoghq.com/java.logs: >-
+          [{
+            "source": "java",
+            "service": "{{ template "app.name" . }}",
+            "log_processing_rules": [{
+              "type": "multi_line",
+              "name": "log_start_with_date",
+              "pattern" : "\\d{4}-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])"
+            }]
+          }]
+{{- end }}
+{{- if .Values.app.podAnnotations }}
+{{ toYaml .Values.app.podAnnotations | indent 8 }}
+{{- end }}
+      labels:
+        app: {{ template "app.fullname" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: java
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+{{- if .Values.app.extraArgs }}
+        args:
+{{ toYaml .Values.app.extraArgs | indent 10 }}
+{{- end }}
+        envFrom:
+        - secretRef:
+            name: {{ template "app.name" . }}
+{{- if .Values.app.jmxPort }}
+        - containerPort: {{ .Values.app.jmxPort }}
+          name: jmx
+{{- end }}
+{{- if .Values.app.livenessProbe }}
+        livenessProbe:
+{{ toYaml .Values.app.livenessProbe | indent 10 }}
+{{- end }}
+{{- if .Values.app.readinessProbe }}
+        readinessProbe:
+{{ toYaml .Values.app.readinessProbe | indent 10 }}
+{{- end }}
+{{- if .Values.app.resources }}
+        resources:
+{{ toYaml .Values.app.resources | indent 10 }}
+{{- end }}

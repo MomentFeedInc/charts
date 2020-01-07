@@ -1,0 +1,34 @@
+image:
+  repository: jetty
+  tag: latest
+
+replicaCount: 2
+
+app:
+  extraArgs: []
+  maxUnavailable: 1
+  podAnnotations: {}
+  # jmxPort: 9999
+  secretsChecksum: ""
+
+  # Ref: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
+  # Ref: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.14/#resourcerequirements-v1-core
+
+  # resources:
+  #   requests:
+  #     cpu: 0.25
+  #     memory: 512Mi
+  #   limits:
+  #     cpu: 2
+  #     memory: 2Gi
+
+# Ref: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/
+
+hpa:
+  enabled: false
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilization: 80
+
+datadog:
+  enabled: true
