@@ -34,9 +34,9 @@ spec:
         envFrom:
         - secretRef:
             name: {{ template "app.name" . }}
-{{- if .Values.app.httpPort }}
+{{- if .Values.service.port }}
         ports:
-        - containerPort: {{ .Values.app.httpPort }}
+        - containerPort: {{ .Values.service.port }}
           name: http
 {{- end }}
 {{- if .Values.app.jmxPort }}

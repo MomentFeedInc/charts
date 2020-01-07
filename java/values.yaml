@@ -8,7 +8,6 @@ app:
   extraArgs: []
   maxUnavailable: 1
   podAnnotations: {}
-  # httpPort: 8080
   # jmxPort: 9999
   secretsChecksum: ""
 
@@ -58,3 +57,4 @@ ingress:
 
 service:
   annotations: {}
+  port: 8080
