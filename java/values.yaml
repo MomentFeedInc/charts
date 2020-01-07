@@ -2,13 +2,14 @@ image:
   repository: jetty
   tag: latest
 
+replicaCount: 2
+
 app:
   extraArgs: []
   maxUnavailable: 1
   podAnnotations: {}
   # httpPort: 8080
   # jmxPort: 9999
-  replicas: 1
   secretsChecksum: ""
 
   # Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
