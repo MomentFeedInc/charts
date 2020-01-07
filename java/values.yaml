@@ -15,17 +15,17 @@ app:
   # Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
   # Ref: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.14/#probe-v1-core
 
-  # livenessProbe:
-  #   httpGet:
-  #     path: /
-  #     port: http
-  #   initialDelaySeconds: 15
+  livenessProbe:
+    httpGet:
+      path: /
+      port: http
+    initialDelaySeconds: 15
 
-  # readinessProbe:
-  #   httpGet:
-  #     path: /
-  #     port: http
-  #   initialDelaySeconds: 15
+  readinessProbe:
+    httpGet:
+      path: /
+      port: http
+    initialDelaySeconds: 15
 
   # Ref: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
   # Ref: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.14/#resourcerequirements-v1-core
