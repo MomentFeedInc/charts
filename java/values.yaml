@@ -58,3 +58,6 @@ ingress:
 service:
   annotations: {}
   port: 8080
+
+datadog:
+  enabled: true
