@@ -29,13 +29,13 @@ app:
   # Ref: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
   # Ref: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.14/#resourcerequirements-v1-core
 
-  # resources:
-  #   requests:
-  #     cpu: 0.25
-  #     memory: 512Mi
-  #   limits:
-  #     cpu: 2
-  #     memory: 2Gi
+  resources:
+    requests:
+      cpu: 0.100
+      memory: 512Mi
+    limits:
+      cpu: 2
+      memory: 2Gi
 
 # Ref: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/
 
