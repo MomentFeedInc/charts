@@ -1,0 +1,68 @@
+image:
+  repository: ruby
+  tag: slim
+
+nginx:
+  podAnnotations: {}
+  replicaCount: 2
+  proxyHost: ""
+
+  resources:
+    requests:
+      cpu: 0.500
+      memory: 1Gi
+    limits:
+      cpu: 1
+      memory: 2Gi
+
+rails:
+  podAnnotations: {}
+  replicaCount: 2
+  secretsChecksum: ""
+
+  # Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+  # Ref: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.14/#probe-v1-core
+
+  livenessProbe:
+    httpGet:
+      path: /ping
+      port: http
+    initialDelaySeconds: 15
+
+  readinessProbe:
+    httpGet:
+      path: /ping
+      port: http
+    initialDelaySeconds: 15
+
+  # Ref: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
+  # Ref: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.14/#resourcerequirements-v1-core
+
+  resources:
+    requests:
+      cpu: 0.100
+      memory: 512Mi
+    limits:
+      cpu: 2
+      memory: 2Gi
+
+# Ref: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/
+
+hpa:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilization: 80
+
+# Ref: https://kubernetes.io/docs/concepts/services-networking/ingress/
+
+ingress:
+  enabled: false
+  annotations: {}
+  hosts: []
+
+service:
+  annotations: {}
+
+datadog:
+  enabled: true

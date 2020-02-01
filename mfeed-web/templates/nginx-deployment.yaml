@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ template "app.fullname" . }}-nginx"
+  labels:
+    app: "{{ template "app.name" . }}-nginx"
+    release: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.nginx.replicaCount }}
+  selector:
+    matchLabels:
+      app: "{{ template "app.fullname" . }}-nginx"
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      annotations:
+        checksum/confd: {{ .Values.nginx.proxyHost | sha256sum }}
+{{- if .Values.datadog.enabled }}
+        ad.datadoghq.com/nginx.logs: >-
+          [{
+            "source": "nginx",
+            "service": "{{ template "app.name" . }}-nginx"
+          }]
+{{- end }}
+{{- if .Values.nginx.podAnnotations }}
+{{ toYaml .Values.nginx.podAnnotations | indent 8 }}
+{{- end }}
+      labels:
+        app: "{{ template "app.fullname" . }}-nginx"
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: nginx
+        image: "nginx:alpine"
+        envFrom:
+        - secretRef:
+            name: {{ template "app.name" . }}
+        volumeMounts:
+          - name: confd
+            mountPath: /etc/nginx/conf.d/
+            readOnly: true
+        ports:
+        - containerPort: 80
+          name: http
+        - containerPort: 8080
+          name: status
+        livenessProbe:
+          httpGet:
+            path: /nginx_status
+            port: status
+        readinessProbe:
+          httpGet:
+            path: /nginx_status
+            port: status
+{{- if .Values.nginx.resources }}
+        resources:
+{{ toYaml .Values.nginx.resources | indent 10 }}
+{{- end }}
+      volumes:
+        - name: confd
+          configMap:
+            name: "{{ template "app.fullname" . }}-nginx"

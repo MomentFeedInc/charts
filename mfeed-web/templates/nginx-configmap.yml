@@ -1,0 +1,63 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ template "app.fullname" . }}-nginx"
+  labels:
+    app: "{{ template "app.name" . }}-nginx"
+    release: {{ .Release.Name }}
+data:
+  default.conf: |-
+    server {
+      listen      80;
+      server_name {{ join " " .Values.ingress.hosts }};
+
+      # Rails
+
+      location / {
+        proxy_pass       http://mfeed-web:3000;
+        proxy_set_header Host              $host;
+        proxy_set_header X-Real-IP         $remote_addr;
+        proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Host  $host;
+        proxy_set_header X-Forwarded-Port  $server_port;
+      }
+
+      # Analytics
+
+      location /analytics/ {
+        proxy_pass       https://{{ .Values.nginx.proxyHost }}/analytics/;
+        proxy_set_header Host              $host;
+        proxy_set_header X-Real-IP         $remote_addr;
+        proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Host  $host;
+        proxy_set_header X-Forwarded-Port  $server_port;
+      }
+
+      # SPA
+
+      location /spa/ {
+        proxy_pass       https://{{ .Values.nginx.proxyHost }}/spa/;
+        proxy_set_header Host              $host;
+        proxy_set_header X-Real-IP         $remote_addr;
+        proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Host  $host;
+        proxy_set_header X-Forwarded-Port  $server_port;
+      }
+
+      proxy_redirect https://$host/users/sign_in https://$host/spa/#/auth/login;
+    }
+
+    server {
+      listen      8080;
+      server_name {{ join " " .Values.ingress.hosts }};
+
+      # NGINX Status
+
+      location /nginx_status {
+        stub_status on;
+        access_log  off;
+      }
+    }

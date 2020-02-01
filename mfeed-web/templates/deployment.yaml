@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "app.fullname" . }}
+  labels:
+    app: {{ template "app.name" . }}
+    release: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.rails.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "app.fullname" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      annotations:
+        checksum/secrets: "{{ .Values.rails.secretsChecksum }}"
+{{- if .Values.datadog.enabled }}
+        ad.datadoghq.com/rails.logs: >-
+          [{
+            "source": "ruby",
+            "service": "{{ template "app.name" . }}"
+          }]
+{{- end }}
+{{- if .Values.rails.podAnnotations }}
+{{ toYaml .Values.rails.podAnnotations | indent 8 }}
+{{- end }}
+      labels:
+        app: {{ template "app.fullname" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: rails
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        envFrom:
+        - secretRef:
+            name: {{ template "app.name" . }}
+        ports:
+        - containerPort: 3000
+          name: http
+{{- if .Values.rails.livenessProbe }}
+        livenessProbe:
+{{ toYaml .Values.rails.livenessProbe | indent 10 }}
+{{- end }}
+{{- if .Values.rails.readinessProbe }}
+        readinessProbe:
+{{ toYaml .Values.rails.readinessProbe | indent 10 }}
+{{- end }}
+{{- if .Values.rails.resources }}
+        resources:
+{{ toYaml .Values.rails.resources | indent 10 }}
+{{- end }}
