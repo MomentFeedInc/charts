@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: {{ template "app.fullname" . }}
   labels:
-    app: {{ template "app.name" . }}
+    app: "{{ template "app.name" . }}-nginx"
     release: {{ .Release.Name }}
 {{- if .Values.service.annotations }}
   annotations:
@@ -12,7 +12,7 @@ metadata:
 spec:
   ports:
   - name: http
-    port: 3000
+    port: 80
   selector:
-    app: {{ template "app.fullname" . }}
+    app: "{{ template "app.fullname" . }}-nginx"
     release: {{ .Release.Name }}
