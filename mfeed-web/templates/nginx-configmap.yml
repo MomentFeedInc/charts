@@ -21,6 +21,7 @@ data:
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_set_header X-Forwarded-Host  $host;
         proxy_set_header X-Forwarded-Port  $server_port;
+        proxy_set_header X-Forwarded-Ssl   on;
       }
 
       # Analytics
@@ -33,6 +34,7 @@ data:
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_set_header X-Forwarded-Host  $host;
         proxy_set_header X-Forwarded-Port  $server_port;
+        proxy_set_header X-Forwarded-Ssl   on;
       }
 
       # SPA
@@ -45,9 +47,10 @@ data:
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_set_header X-Forwarded-Host  $host;
         proxy_set_header X-Forwarded-Port  $server_port;
+        proxy_set_header X-Forwarded-Ssl   on;
       }
 
-      proxy_redirect http://$host/users/sign_in /spa/#/auth/login;
+      proxy_redirect https://$host/users/sign_in https://$host/spa/#/auth/login;
     }
 
     server {
