@@ -6,7 +6,7 @@ metadata:
     app: {{ template "app.name" . }}
     release: {{ .Release.Name }}
 spec:
-  replicas: {{ .Values.rails.replicaCount }}
+  replicas: {{ .Values.app.replicaCount }}
   selector:
     matchLabels:
       app: {{ template "app.fullname" . }}
@@ -14,16 +14,21 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/secrets: "{{ .Values.rails.secretsChecksum }}"
+        checksum/secrets: "{{ .Values.app.secretsChecksum }}"
 {{- if .Values.datadog.enabled }}
         ad.datadoghq.com/rails.logs: >-
           [{
             "source": "ruby",
             "service": "{{ template "app.name" . }}"
           }]
+        ad.datadoghq.com/nginx.logs: >-
+          [{
+            "source": "nginx",
+            "service": "{{ template "app.name" . }}"
+          }]
 {{- end }}
-{{- if .Values.rails.podAnnotations }}
-{{ toYaml .Values.rails.podAnnotations | indent 8 }}
+{{- if .Values.app.podAnnotations }}
+{{ toYaml .Values.app.podAnnotations | indent 8 }}
 {{- end }}
       labels:
         app: {{ template "app.fullname" . }}
@@ -38,15 +43,41 @@ spec:
         ports:
         - containerPort: 3000
           name: http
-{{- if .Values.rails.livenessProbe }}
+{{- if .Values.app.livenessProbe }}
         livenessProbe:
-{{ toYaml .Values.rails.livenessProbe | indent 10 }}
+{{ toYaml .Values.app.livenessProbe | indent 10 }}
 {{- end }}
-{{- if .Values.rails.readinessProbe }}
+{{- if .Values.app.readinessProbe }}
         readinessProbe:
-{{ toYaml .Values.rails.readinessProbe | indent 10 }}
+{{ toYaml .Values.app.readinessProbe | indent 10 }}
 {{- end }}
-{{- if .Values.rails.resources }}
+{{- if .Values.app.resources }}
         resources:
-{{ toYaml .Values.rails.resources | indent 10 }}
+{{ toYaml .Values.app.resources | indent 10 }}
 {{- end }}
+      - name: nginx
+        image: nginx:alpine
+        envFrom:
+        - secretRef:
+            name: {{ template "app.name" . }}
+        ports:
+        - containerPort: 80
+          name: http
+        - containerPort: 8080
+          name: status
+        livenessProbe:
+          httpGet:
+            path: /nginx_status
+            port: status
+        readinessProbe:
+          httpGet:
+            path: /nginx_status
+            port: status
+        volumeMounts:
+          - name: confd
+            mountPath: /etc/nginx/conf.d/
+            readOnly: true
+      volumes:
+        - name: confd
+          configMap:
+            name: {{ template "app.fullname" . }}

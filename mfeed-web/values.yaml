@@ -2,22 +2,10 @@ image:
   repository: ruby
   tag: slim
 
-nginx:
+app:
   podAnnotations: {}
   replicaCount: 2
   proxyHost: ""
-
-  resources:
-    requests:
-      cpu: 0.500
-      memory: 1Gi
-    limits:
-      cpu: 1
-      memory: 2Gi
-
-rails:
-  podAnnotations: {}
-  replicaCount: 2
   secretsChecksum: ""
 
   # Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
