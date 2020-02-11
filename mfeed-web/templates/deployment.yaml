@@ -21,11 +21,6 @@ spec:
             "source": "ruby",
             "service": "{{ template "app.name" . }}"
           }]
-        ad.datadoghq.com/nginx.logs: >-
-          [{
-            "source": "nginx",
-            "service": "{{ template "app.name" . }}"
-          }]
 {{- end }}
 {{- if .Values.app.podAnnotations }}
 {{ toYaml .Values.app.podAnnotations | indent 8 }}
@@ -41,7 +36,7 @@ spec:
         - secretRef:
             name: {{ template "app.name" . }}
         ports:
-        - containerPort: 3000
+        - containerPort: 80
           name: http
 {{- if .Values.app.livenessProbe }}
         livenessProbe:
@@ -55,29 +50,3 @@ spec:
         resources:
 {{ toYaml .Values.app.resources | indent 10 }}
 {{- end }}
-      - name: nginx
-        image: nginx:alpine
-        envFrom:
-        - secretRef:
-            name: {{ template "app.name" . }}
-        ports:
-        - containerPort: 80
-          name: http
-        - containerPort: 8080
-          name: status
-        livenessProbe:
-          httpGet:
-            path: /nginx_status
-            port: status
-        readinessProbe:
-          httpGet:
-            path: /nginx_status
-            port: status
-        volumeMounts:
-          - name: confd
-            mountPath: /etc/nginx/conf.d/
-            readOnly: true
-      volumes:
-        - name: confd
-          configMap:
-            name: {{ template "app.fullname" . }}
