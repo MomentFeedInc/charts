@@ -38,5 +38,5 @@ data:
         proxy_busy_buffers_size 16k;
       }
 
-      {{ toYaml .Values.app.nginxConfig | indent 6 }}
+{{ .Values.app.nginxConfig | indent 6 }}
     }
