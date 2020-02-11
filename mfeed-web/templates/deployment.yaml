@@ -15,10 +15,15 @@ spec:
     metadata:
       annotations:
         checksum/secrets: "{{ .Values.app.secretsChecksum }}"
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
 {{- if .Values.datadog.enabled }}
         ad.datadoghq.com/rails.logs: >-
           [{
             "source": "ruby",
+            "service": "{{ template "app.name" . }}"
+          },
+          {
+            "source": "nginx",
             "service": "{{ template "app.name" . }}"
           }]
 {{- end }}
@@ -50,3 +55,11 @@ spec:
         resources:
 {{ toYaml .Values.app.resources | indent 10 }}
 {{- end }}
+        volumeMounts:
+          - name: confd
+            mountPath: /etc/nginx/sites-enabled/
+            readOnly: true
+      volumes:
+        - name: confd
+          configMap:
+            name: {{ template "app.fullname" . }}

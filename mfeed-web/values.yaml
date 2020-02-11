@@ -5,7 +5,7 @@ image:
 app:
   podAnnotations: {}
   replicaCount: 2
-  proxyHost: ""
+  nginxConfig: ""
   secretsChecksum: ""
 
   # Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
