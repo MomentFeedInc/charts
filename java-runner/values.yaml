@@ -22,6 +22,16 @@ app:
   #     cpu: 2
   #     memory: 2Gi
 
+  # Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+  # Ref: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.14/#probe-v1-core
+
+  readinessProbe:
+    exec:
+      command:
+        - touch
+        - /tmp/healthy
+    initialDelaySeconds: 15
+
 # Ref: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/
 
 hpa:
