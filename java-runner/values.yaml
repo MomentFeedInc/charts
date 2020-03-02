@@ -2,7 +2,7 @@ image:
   repository: jetty
   tag: latest
 
-replicaCount: 2
+replicaCount: 1
 
 app:
   extraArgs: []
@@ -36,7 +36,7 @@ app:
 
 hpa:
   enabled: false
-  minReplicas: 2
+  minReplicas: 1
   maxReplicas: 10
   targetCPUUtilization: 80
 
