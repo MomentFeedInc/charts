@@ -20,7 +20,7 @@ spec:
   - host: {{ $host }}
     http:
       paths:
-        - backend:
+      - backend:
           serviceName: ssl-redirect
           servicePort: use-annotation
       - backend:
@@ -32,9 +32,9 @@ spec:
   - host: {{ $host }}
     http:
       paths:
-        - backend:
-            serviceName: {{ $serviceName }}
-            servicePort: http
+      - backend:
+          serviceName: {{ $serviceName }}
+          servicePort: http
 {{- end }}
 {{- end }}
   tls:
