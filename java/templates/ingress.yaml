@@ -19,9 +19,11 @@ spec:
   - host: {{ $host }}
     http:
       paths:
-      - backend:
+{{- if .Values.ingress.alb.enabled }}
+        - backend:
           serviceName: ssl-redirect
           servicePort: use-annotation
+{{- end }}
       - backend:
           serviceName: {{ $serviceName }}
           servicePort: http
