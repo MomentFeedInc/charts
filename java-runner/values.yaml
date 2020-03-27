@@ -14,12 +14,12 @@ app:
   # Ref: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
   # Ref: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.14/#resourcerequirements-v1-core
 
-  # resources:
+  resources:
   #   requests:
   #     cpu: 0.25
   #     memory: 512Mi
-  #   limits:
-  #     cpu: 2
+    limits:
+      cpu: 4
   #     memory: 2Gi
 
   # Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
@@ -37,7 +37,7 @@ app:
 hpa:
   enabled: false
   minReplicas: 1
-  maxReplicas: 10
+  maxReplicas: 5
   targetCPUUtilization: 80
 
 datadog:
