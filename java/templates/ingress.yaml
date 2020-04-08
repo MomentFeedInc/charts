@@ -15,19 +15,6 @@ metadata:
 {{- end }}
 spec:
   rules:
-{{- if .Values.ingress.alb.enabled }}
-{{- range $host := .Values.ingress.hosts }}
-  - host: {{ $host }}
-    http:
-      paths:
-      - backend:
-          serviceName: ssl-redirect
-          servicePort: use-annotation
-      - backend:
-          serviceName: {{ $serviceName }}
-          servicePort: http
-{{- end }}
-{{- else }}
 {{- range $host := .Values.ingress.hosts }}
   - host: {{ $host }}
     http:
@@ -35,7 +22,6 @@ spec:
       - backend:
           serviceName: {{ $serviceName }}
           servicePort: http
-{{- end }}
 {{- end }}
   tls:
   - hosts:
