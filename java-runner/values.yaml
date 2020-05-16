@@ -17,10 +17,10 @@ app:
   resources:
     requests:
       cpu: 50m
-  #     memory: 512Mi
+      memory: 1Gi
     limits:
       cpu: 4
-  #     memory: 2Gi
+      memory: 1Gi
 
   # Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
   # Ref: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.14/#probe-v1-core
